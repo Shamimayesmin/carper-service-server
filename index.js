@@ -4,7 +4,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const { ObjectID, ObjectId } = require('bson');
 const { query } = require('express');
 require('dotenv').config()
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 
 const app = express()
@@ -36,6 +36,14 @@ async function run(){
 
         const addServiceCollection = client.db('carperDb').collection('addService')
 
+        // jwt token
+        app.post('/jwt', (req,res)=>{
+            const user = req.body;
+            console.log(user);
+
+            // const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn :'1d'})
+            // res.send({token})
+        })
 
         app.get('/services', async(req,res) =>{
             const query = {}
