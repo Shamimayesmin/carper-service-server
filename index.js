@@ -95,16 +95,7 @@ async function run(){
             const review = await cursor.toArray()
             res.send(review.reverse())
         })
-
-        
-            
-        //     const id = req.params.id;
-        //     const query = {_id : ObjectID(id)}
-        //     const service = await serviceCollection.findOne(query).toArray()
-        //     res.send(service)
-            
-            
-        
+ 
 
         // update review  :
         app.patch('/reviews/:id', async(req,res) =>{
