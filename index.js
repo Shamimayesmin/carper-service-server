@@ -13,8 +13,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// user : carperDbUser
-// pass : shvWcrAwZ2og7MWY
+
 
 console.log(process.env.DB_USER);
 console.log(process.env.DB_PASSWORD);
@@ -90,7 +89,7 @@ async function run() {
 			res.send(result);
 		});
 
-		// add service load kora by email
+		//add service load kora by email
 		app.get("/addService", async (req, res) => {
 			let query = {};
 			if (req.query.email) {
@@ -103,6 +102,9 @@ async function run() {
 			console.log(service);
 			res.send(service);
 		});
+
+		
+        
 
 		// review api
 		app.post("/reviews", async (req, res) => {
