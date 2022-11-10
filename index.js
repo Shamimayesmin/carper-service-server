@@ -34,6 +34,8 @@ async function run(){
 
         const reviewCollection = client.db('carperDb').collection('reviews')
 
+        const addServiceCollection = client.db('carperDb').collection('addService')
+
 
         app.get('/services', async(req,res) =>{
             const query = {}
@@ -46,6 +48,27 @@ async function run(){
             const query = {_id : ObjectID(id)}
             const service = await serviceCollection.findOne(query)
             res.send(service)
+        })
+
+        // checkbox add service
+        app.post('/addService', async(req,res) =>{
+            const addservice = req.body;
+            const result = await addServiceCollection.insertOne(addservice);
+            res.send(result);
+        })
+
+        // add service load kora by email 
+        app.get('/addService', async(req,res) =>{
+            let query = {}
+            if(req.query.email){
+                query = {
+                    email : req.query.email
+                }
+            }
+            const cursor = addServiceCollection.find(query);
+            const service = await cursor.toArray();
+            console.log(service);
+            res.send(service);
         })
 
         // review api 
@@ -73,7 +96,18 @@ async function run(){
             res.send(review.reverse())
         })
 
-        // update review page :
+        // // details page review
+        // app.get('/reviews/:id', async(req,res) =>{
+            
+        //     const id = req.params.id;
+        //     const query = {_id : ObjectID(id)}
+        //     const service = await serviceCollection.findOne(query).toArray()
+        //     res.send(service)
+            
+            
+        // })
+
+        // update review  :
         app.patch('/reviews/:id', async(req,res) =>{
             const id = req.params.id;
             const status = req.body.status;
@@ -94,6 +128,8 @@ async function run(){
             const result = await reviewCollection.deleteOne(query)
             res.send(result);
         })
+
+        
     }
     finally{
 
