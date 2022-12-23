@@ -68,41 +68,28 @@ async function run() {
 		});
 
         //------------------------------------------
-
+		// get all service
 		app.get("/services", async (req, res) => {
 			const query = {};
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.toArray();
 			res.send(services);
 		});
+		// get specific sercice
 		app.get("/services/:id", async (req, res) => {
 			const id = req.params.id;
-			const query = { _id: ObjectID(id) };
-			const service = await serviceCollection.findOne(query);
-			res.send(service);
-		});
-
-		// checkbox add service
-		app.post("/addService", async (req, res) => {
-			const addservice = req.body;
-			const result = await addServiceCollection.insertOne(addservice);
+			const query = { _id: ObjectId(id) };
+			const cursor = serviceCollection.find(query);
+			const result = await cursor.toArray();
 			res.send(result);
 		});
 
-		//add service load kora by email
-		app.get("/addService", async (req, res) => {
-			let query = {};
-			if (req.query.email) {
-				query = {
-					email: req.query.email,
-				};
-			}
-			const cursor = addServiceCollection.find(query);
-			const service = await cursor.toArray();
-			console.log(service);
-			res.send(service);
+		// add service
+		app.post("/addService", async (req, res) => {
+			const addservice = req.body;
+			const result = await serviceCollection.insertOne(addservice);
+			res.send(result);
 		});
-
 		
         
 
@@ -113,10 +100,17 @@ async function run() {
 			res.send(result);
 		});
 
-		// get review api from db
-		app.get("/reviews",verifyJWT, async (req, res) => {
+		//post review
+		app.post('/reviews/:id', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+		// get my review api from db
+		app.get("/reviews", async (req, res) => {
 			console.log(req.headers);
 			const decoded = req.decoded;
+
 			if(decoded.email !== req.query.email){
 			    res.status(403).send({message : 'unathorized access'})
 			}
@@ -131,19 +125,41 @@ async function run() {
 			res.send(review.reverse());
 		});
 
+		// get specific service review
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { serviceId: id };
+            const cursor = reviewCollection.find(query).sort({ date: -1 });
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
+
+		//get specific review to update
+        app.get('/edit/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {
+                _id: ObjectId(id)
+            };
+            const result = await reviewCollection.findOne(query);
+            res.send(result);
+        })
+
 		// update review  :
-		app.patch("/reviews/:id", async (req, res) => {
+		app.put("/edit/:id", async (req, res) => {
 			const id = req.params.id;
-			const status = req.body.status;
-			const query = { _id: ObjectId(id) };
+			const editReview = req.body.review;
+			const query = { _id: ObjectId(id)};
+			const option = {upsert : true}
 			const updatedDoc = {
 				$set: {
-					status: status,
+					review: editReview
 				},
 			};
-			const result = await reviewCollection.updateOne(query, updatedDoc);
+			const result = await reviewCollection.updateOne(query, updatedDoc,option);
 			res.send(result);
 		});
+
+
 
 		// delete review
 		app.delete("/reviews/:id", async (req, res) => {
