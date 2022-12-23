@@ -73,7 +73,8 @@ async function run() {
 			const query = {};
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.toArray();
-			res.send(services);
+			const result = services.reverse() 
+			res.send(result);
 		});
 		// get specific sercice
 		app.get("/services/:id", async (req, res) => {
@@ -87,7 +88,9 @@ async function run() {
 		// add service
 		app.post("/addService", async (req, res) => {
 			const addservice = req.body;
+			console.log(req.body);
 			const result = await serviceCollection.insertOne(addservice);
+			console.log(result);
 			res.send(result);
 		});
 		
@@ -147,12 +150,14 @@ async function run() {
 		// update review  :
 		app.put("/edit/:id", async (req, res) => {
 			const id = req.params.id;
-			const editReview = req.body.review;
+			console.log(id);
+			console.log(req.body);
+			const editReview = req.body.updatedReview;
 			const query = { _id: ObjectId(id)};
 			const option = {upsert : true}
 			const updatedDoc = {
 				$set: {
-					review: editReview
+					message: editReview
 				},
 			};
 			const result = await reviewCollection.updateOne(query, updatedDoc,option);
