@@ -74,7 +74,7 @@ async function run() {
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.toArray();
 			const result = services.reverse() 
-			res.send(result);
+			res.send(result)
 		});
 		// get specific sercice
 		app.get("/services/:id", async (req, res) => {
@@ -94,7 +94,7 @@ async function run() {
 			res.send(result);
 		});
 		
-        
+       
 
 		// review api
 		app.post("/reviews", async (req, res) => {
