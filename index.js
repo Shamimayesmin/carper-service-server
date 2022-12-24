@@ -76,11 +76,11 @@ async function run() {
 			const result = services.reverse() 
 			res.send(result)
 		});
-		// get specific sercice
+		// get specific service
 		app.get("/services/:id", async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: ObjectId(id) };
-			const cursor = serviceCollection.find(query);
+			const cursor = serviceCollection.find(query); 
 			const result = await cursor.toArray();
 			res.send(result);
 		});
