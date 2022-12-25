@@ -131,8 +131,11 @@ async function run() {
 		// get specific service review
         app.get('/reviews/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { serviceId: id };
-            const cursor = reviewCollection.find(query).sort({ date: -1 });
+            const query = { 
+				// serviceId: id 
+				_id: ObjectId(id)
+			};
+            const cursor = reviewCollection.find(query) //.sort({ date: -1 });
             const reviews = await cursor.toArray();
             res.send(reviews);
         })
